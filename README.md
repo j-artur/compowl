@@ -8,7 +8,7 @@ O programa foi desenvolvido na linguagem de programação [Rust](https://www.rus
 
 Usando `cargo`:
 
-```sh
+```console
 cargo build && cp target/debug/compowl .
 ```
 
@@ -18,7 +18,7 @@ O executável estará disponível em `target/debug/compowl`. É recomendado copi
 
 usando `rustc`:
 
-```sh
+```console
 rustc src/main.rs -o compowl
 ```
 
@@ -26,7 +26,7 @@ O executável já estará na pasta raíz com o nome `compowl`.
 
 ## Execução
 
-```sh
+```console
 ./compowl <output> <file1> <file2> ...
 ```
 
