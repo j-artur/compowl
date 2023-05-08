@@ -19,6 +19,13 @@ pub enum Keyword {
 }
 
 #[derive(Debug, Clone, Copy)]
+pub enum Datatype {
+    Integer,
+    Float,
+    Boolean,
+}
+
+#[derive(Debug, Clone, Copy)]
 pub enum Punctuation {
     OpenParen,
     CloseParen,
@@ -35,6 +42,7 @@ pub enum Punctuation {
 
 pub enum TokenType {
     Keyword(Keyword),
+    Datatype(Datatype),
     Punctuation(Punctuation),
     ClassIdentifier(String),
     PropertyIdentifier(String),
@@ -128,15 +136,14 @@ fn parse_seq<'s>(src: Span<'s>, sequence: &str) -> LexerResult<'s, Located<'s, &
     }
 }
 
-fn parse_seq_ignore_casing<'s>(
+fn parse_seq_any_casing<'s>(
     src: Span<'s>,
     sequence: &str,
 ) -> LexerResult<'s, Located<'s, &'s str>> {
-    match src
-        .fragment()
-        .get(0..sequence.len())
-        .filter(|substr| substr.to_lowercase() == sequence.to_lowercase())
-    {
+    match src.fragment().get(0..sequence.len()).filter(|substr| {
+        substr.to_string() == sequence.to_lowercase()
+            || substr.to_string() == sequence.to_uppercase()
+    }) {
         None => LexerResult::err(src, LexerErr::UnrecognizedToken),
         Some(matched) => {
             let (remaining, span) = src.split(matched.len());
@@ -171,17 +178,24 @@ fn parse_while<'s, F: FnMut(char) -> bool>(
 
 fn parse_keyword<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, Keyword>> {
     LexerResult::err(src, LexerErr::UnrecognizedToken)
-        .or_else(|src| parse_seq_ignore_casing(src, "SOME").map(|k| k.map(|_| Keyword::SOME)))
-        .or_else(|src| parse_seq_ignore_casing(src, "ALL").map(|k| k.map(|_| Keyword::ALL)))
-        .or_else(|src| parse_seq_ignore_casing(src, "VALUE").map(|k| k.map(|_| Keyword::VALUE)))
-        .or_else(|src| parse_seq_ignore_casing(src, "MIN").map(|k| k.map(|_| Keyword::MIN)))
-        .or_else(|src| parse_seq_ignore_casing(src, "MAX").map(|k| k.map(|_| Keyword::MAX)))
-        .or_else(|src| parse_seq_ignore_casing(src, "EXACTLY").map(|k| k.map(|_| Keyword::EXACTLY)))
-        .or_else(|src| parse_seq_ignore_casing(src, "THAT").map(|k| k.map(|_| Keyword::THAT)))
-        .or_else(|src| parse_seq_ignore_casing(src, "ONLY").map(|k| k.map(|_| Keyword::ONLY)))
-        .or_else(|src| parse_seq_ignore_casing(src, "NOT").map(|k| k.map(|_| Keyword::NOT)))
-        .or_else(|src| parse_seq_ignore_casing(src, "AND").map(|k| k.map(|_| Keyword::AND)))
-        .or_else(|src| parse_seq_ignore_casing(src, "OR").map(|k| k.map(|_| Keyword::OR)))
+        .or_else(|src| parse_seq_any_casing(src, "SOME").map(|k| k.map(|_| Keyword::SOME)))
+        .or_else(|src| parse_seq_any_casing(src, "ALL").map(|k| k.map(|_| Keyword::ALL)))
+        .or_else(|src| parse_seq_any_casing(src, "VALUE").map(|k| k.map(|_| Keyword::VALUE)))
+        .or_else(|src| parse_seq_any_casing(src, "MIN").map(|k| k.map(|_| Keyword::MIN)))
+        .or_else(|src| parse_seq_any_casing(src, "MAX").map(|k| k.map(|_| Keyword::MAX)))
+        .or_else(|src| parse_seq_any_casing(src, "EXACTLY").map(|k| k.map(|_| Keyword::EXACTLY)))
+        .or_else(|src| parse_seq_any_casing(src, "THAT").map(|k| k.map(|_| Keyword::THAT)))
+        .or_else(|src| parse_seq_any_casing(src, "ONLY").map(|k| k.map(|_| Keyword::ONLY)))
+        .or_else(|src| parse_seq_any_casing(src, "NOT").map(|k| k.map(|_| Keyword::NOT)))
+        .or_else(|src| parse_seq_any_casing(src, "AND").map(|k| k.map(|_| Keyword::AND)))
+        .or_else(|src| parse_seq_any_casing(src, "OR").map(|k| k.map(|_| Keyword::OR)))
+}
+
+fn parse_datatype<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, Datatype>> {
+    LexerResult::err(src, LexerErr::UnrecognizedToken)
+        .or_else(|src| parse_seq_any_casing(src, "INTEGER").map(|l| l.map(|_| Datatype::Integer)))
+        .or_else(|src| parse_seq_any_casing(src, "FLOAT").map(|l| l.map(|_| Datatype::Float)))
+        .or_else(|src| parse_seq_any_casing(src, "BOOLEAN").map(|l| l.map(|_| Datatype::Boolean)))
 }
 
 fn parse_punctuation<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, Punctuation>> {
@@ -324,6 +338,7 @@ fn parse_string_literal<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, String
 fn parse_token<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, TokenType>> {
     LexerResult::err(src, LexerErr::UnrecognizedToken)
         .or_else(|src| parse_keyword(src).map(|l| l.map(|k| TokenType::Keyword(k))))
+        .or_else(|src| parse_datatype(src).map(|l| l.map(|d| TokenType::Datatype(d))))
         .or_else(|src| parse_punctuation(src).map(|l| l.map(|p| TokenType::Punctuation(p))))
         .or_else(|src| parse_class(src).map(|l| l.map(|c| TokenType::ClassIdentifier(c))))
         .or_else(|src| parse_property(src).map(|l| l.map(|p| TokenType::PropertyIdentifier(p))))
@@ -334,6 +349,7 @@ fn parse_token<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, TokenType>> {
 #[derive(Debug)]
 pub enum Token {
     Keyword(Keyword),
+    Datatype(Datatype),
     Punctuation(Punctuation),
     ClassIdentifier { index: usize },
     PropertyIdentifier { index: usize },
@@ -351,6 +367,7 @@ pub fn parse<'s>(
     while let Ok((remaining, token_type)) = parse_token(src).result() {
         let located = match token_type.value {
             TokenType::Keyword(k) => Located::new(Token::Keyword(k), token_type.span),
+            TokenType::Datatype(d) => Located::new(Token::Datatype(d), token_type.span),
             TokenType::Punctuation(p) => Located::new(Token::Punctuation(p), token_type.span),
             TokenType::ClassIdentifier(c) => {
                 let index = table.get_or_insert(Type::Class, c);
