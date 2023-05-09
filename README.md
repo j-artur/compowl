@@ -9,7 +9,7 @@ O programa foi desenvolvido na linguagem de programação [Rust](https://www.rus
 Usando `cargo`:
 
 ```console
-cargo build && cp target/debug/compowl .
+cargo build
 ```
 
 O executável estará disponível em `target/debug/compowl`. É recomendado copiá-lo para a pasta raíz para facilitar o acesso.
