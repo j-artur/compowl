@@ -1,0 +1,54 @@
+file2.txt:1:1: Keyword(SOME)
+file2.txt:1:6: Keyword(ALL)
+file2.txt:1:10: Keyword(VALUE)
+file2.txt:1:16: Keyword(MIN)
+file2.txt:1:20: Keyword(MAX)
+file2.txt:1:24: Keyword(EXACTLY)
+file2.txt:1:32: Keyword(THAT)
+file2.txt:1:37: Keyword(NOT)
+file2.txt:1:41: Keyword(AND)
+file2.txt:1:45: Keyword(OR)
+file2.txt:1:48: Punctuation(Comma)
+file2.txt:3:1: ClassIdentifier { index: 0 }
+file2.txt:4:1: ClassIdentifier { index: 1 }
+file2.txt:5:1: ClassIdentifier { index: 2 }
+file2.txt:6:1: ClassIdentifier { index: 0 }
+file2.txt:7:1: ClassIdentifier { index: 0 }
+file2.txt:8:1: ClassIdentifier { index: 1 }
+file2.txt:10:1: PropertyIdentifier { index: 3 }
+file2.txt:11:1: PropertyIdentifier { index: 4 }
+file2.txt:13:1: Punctuation(OpenBrace)
+file2.txt:13:2: ClassIdentifier { index: 5 }
+file2.txt:13:4: Punctuation(Comma)
+file2.txt:13:6: ClassIdentifier { index: 6 }
+file2.txt:13:10: Punctuation(Comma)
+file2.txt:13:12: ClassIdentifier { index: 7 }
+file2.txt:13:16: Punctuation(Comma)
+file2.txt:13:18: ClassIdentifier { index: 8 }
+file2.txt:13:24: Punctuation(CloseBrace)
+file2.txt:15:1: Datatype(Integer)
+file2.txt:15:8: Punctuation(OpenBracket)
+file2.txt:15:9: Punctuation(GreaterThanEqual)
+file2.txt:15:11: Literal { index: 9 }
+file2.txt:15:16: Punctuation(CloseBracket)
+file2.txt:17:1: Datatype(Decimal)
+file2.txt:17:8: Punctuation(OpenBracket)
+file2.txt:17:9: Punctuation(LessThan)
+file2.txt:17:10: Literal { index: 10 }
+file2.txt:17:16: Punctuation(CloseBracket)
+
+--------------------------------------------------------
+|Index|Type    |ID                                     |
+--------------------------------------------------------
+|0    |Class   |Pizza                                  |
+|1    |Class   |VegetarianPizza                        |
+|2    |Class   |Margherita_Pizza_With_BorderOfChocolate|
+|3    |Property|hasSome                                |
+|4    |Property|isTopOf                                |
+|5    |Class   |Um                                     |
+|6    |Class   |Dois                                   |
+|7    |Class   |Tres                                   |
+|8    |Class   |Quatro                                 |
+|9    |Literal |200                                    |
+|10   |Literal |0.50                                   |
+--------------------------------------------------------

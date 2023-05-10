@@ -1,0 +1,40 @@
+file1.txt:1:1: ClassIdentifier { index: 0 }
+file1.txt:1:7: Keyword(THAT)
+file1.txt:2:1: PropertyIdentifier { index: 1 }
+file1.txt:2:12: Keyword(SOME)
+file1.txt:2:17: ClassIdentifier { index: 2 }
+file1.txt:2:35: Keyword(AND)
+file1.txt:3:1: PropertyIdentifier { index: 1 }
+file1.txt:3:12: Keyword(SOME)
+file1.txt:3:17: ClassIdentifier { index: 3 }
+file1.txt:3:31: Keyword(AND)
+file1.txt:4:1: PropertyIdentifier { index: 1 }
+file1.txt:4:12: Keyword(SOME)
+file1.txt:4:17: ClassIdentifier { index: 2 }
+file1.txt:4:35: Keyword(OR)
+file1.txt:5:1: PropertyIdentifier { index: 1 }
+file1.txt:5:12: Keyword(SOME)
+file1.txt:5:17: ClassIdentifier { index: 3 }
+file1.txt:5:31: Keyword(OR)
+file1.txt:6:1: PropertyIdentifier { index: 1 }
+file1.txt:6:12: Keyword(SOME)
+file1.txt:6:17: ClassIdentifier { index: 4 }
+file1.txt:6:35: Keyword(AND)
+file1.txt:7:1: PropertyIdentifier { index: 5 }
+file1.txt:7:12: ClassIdentifier { index: 6 }
+file1.txt:7:25: Keyword(OR)
+file1.txt:8:1: PropertyIdentifier { index: 5 }
+file1.txt:8:12: ClassIdentifier { index: 7 }
+
+----------------------------------
+|Index|Type    |ID               |
+----------------------------------
+|0    |Class   |Pizza            |
+|1    |Property|hasTopping       |
+|2    |Class   |MozzarellaTopping|
+|3    |Class   |TomatoTopping    |
+|4    |Class   |PepperonniTopping|
+|5    |Property|isBorderOf       |
+|6    |Class   |CheeseBorder     |
+|7    |Class   |ChocolateBorder  |
+----------------------------------

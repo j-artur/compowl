@@ -21,8 +21,9 @@ pub enum Keyword {
 #[derive(Debug, Clone, Copy)]
 pub enum Datatype {
     Integer,
+    Decimal,
     Float,
-    Boolean,
+    String,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -47,7 +48,7 @@ pub enum TokenType {
     ClassIdentifier(String),
     PropertyIdentifier(String),
     Cardinality(String),
-    StringLiteral(String),
+    Literal(String),
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -194,8 +195,9 @@ fn parse_keyword<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, Keyword>> {
 fn parse_datatype<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, Datatype>> {
     LexerResult::err(src, LexerErr::UnrecognizedToken)
         .or_else(|src| parse_seq_any_casing(src, "INTEGER").map(|l| l.map(|_| Datatype::Integer)))
+        .or_else(|src| parse_seq_any_casing(src, "DECIMAL").map(|l| l.map(|_| Datatype::Decimal)))
         .or_else(|src| parse_seq_any_casing(src, "FLOAT").map(|l| l.map(|_| Datatype::Float)))
-        .or_else(|src| parse_seq_any_casing(src, "BOOLEAN").map(|l| l.map(|_| Datatype::Boolean)))
+        .or_else(|src| parse_seq_any_casing(src, "STRING").map(|l| l.map(|_| Datatype::String)))
 }
 
 fn parse_punctuation<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, Punctuation>> {
@@ -267,13 +269,6 @@ fn parse_property<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, String>> {
     LexerResult::err(src, LexerErr::UnrecognizedToken)
         .or_else(|src| {
             parse_seq(src, "has")
-                // .and_then(|r, _| parse_if(r, |c| c.is_uppercase()))
-                // .and_then(|r, _| {
-                //     let (_, rest) = parse_while(r, |c| !c.is_whitespace());
-                //     let len = 4 + rest.value.len();
-                //     let (remaining, span) = src.split(len);
-                //     LexerResult::ok(remaining, Located::new(span.fragment().to_string(), span))
-                // })
                 .and_then(|r, _| parse_identifier(r))
                 .and_then(|_, id| {
                     let len = 3 + id.value.len();
@@ -285,17 +280,6 @@ fn parse_property<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, String>> {
         })
         .or_else(|_| {
             parse_seq(src, "is")
-                // .and_then(|r, _| parse_if(r, |c| c.is_uppercase()))
-                // .and_then(|r, _| {
-                //     let (_, rest) = parse_while(r, |c| !c.is_whitespace());
-                //     if rest.value.ends_with("Of") {
-                //         let len = 3 + rest.value.len();
-                //         let (remaining, span) = src.split(len);
-                //         LexerResult::ok(remaining, Located::new(span.fragment().to_string(), span))
-                //     } else {
-                //         LexerResult::err(src, LexerErr::NotRecognized)
-                //     }
-                // })
                 .and_then(|r, _| parse_identifier(r))
                 .and_then(|_, id| {
                     if id.value.ends_with("Of") {
@@ -321,7 +305,7 @@ fn parse_cardinality<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, String>> 
     }
 }
 
-fn parse_string_literal<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, String>> {
+fn parse_literal<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, String>> {
     parse_char(src, '"').and_then(|r, _| {
         let (remaining, located) = parse_while(r, |c| c != '"' && c != '\n');
 
@@ -343,7 +327,7 @@ fn parse_token<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, TokenType>> {
         .or_else(|src| parse_class(src).map(|l| l.map(|c| TokenType::ClassIdentifier(c))))
         .or_else(|src| parse_property(src).map(|l| l.map(|p| TokenType::PropertyIdentifier(p))))
         .or_else(|src| parse_cardinality(src).map(|l| l.map(|c| TokenType::Cardinality(c))))
-        .or_else(|src| parse_string_literal(src).map(|l| l.map(|s| TokenType::StringLiteral(s))))
+        .or_else(|src| parse_literal(src).map(|l| l.map(|s| TokenType::Literal(s))))
 }
 
 #[derive(Debug)]
@@ -354,7 +338,7 @@ pub enum Token {
     ClassIdentifier { index: usize },
     PropertyIdentifier { index: usize },
     Cardinality { index: usize },
-    StringLiteral { index: usize },
+    Literal { index: usize },
 }
 
 pub fn parse<'s>(
@@ -381,9 +365,9 @@ pub fn parse<'s>(
                 let index = table.get_or_insert(Type::Cardinality, c);
                 Located::new(Token::Cardinality { index }, token_type.span)
             }
-            TokenType::StringLiteral(s) => {
-                let index = table.get_or_insert(Type::StringLiteral, s);
-                Located::new(Token::StringLiteral { index }, token_type.span)
+            TokenType::Literal(s) => {
+                let index = table.get_or_insert(Type::Literal, s);
+                Located::new(Token::Literal { index }, token_type.span)
             }
         };
 

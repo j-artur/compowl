@@ -1,0 +1,9 @@
+Pizza THAT
+  hasTopping SOME MozzarellaTopping AND
+  hasTopping SOME TomatoTopping AND
+  hasTopping ONLY (
+    MozzarellaTopping OR
+    TomatoTopping OR
+    PepperonniTopping
+  ) AND
+  hasCaloricContent SOME integer[>="400"]

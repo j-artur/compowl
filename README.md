@@ -6,31 +6,33 @@ O programa foi desenvolvido na linguagem de programação [Rust](https://www.rus
 
 ## Compilação
 
-Usando `cargo`:
+Já está incluso no repositório binários executáveis pronto para ser utilizado (`compowl` para linux, `compowl.exe` para windows), mas é possível recompilar de duas formas:
 
-```console
-cargo build
-```
+- Usando `cargo`:
 
-O executável estará disponível em `target/debug/compowl`. É recomendado copiá-lo para a pasta raíz para facilitar o acesso.
+  ```console
+  cargo build
+  ```
 
-### OU
+  O executável estará disponível em `target/debug/compowl`.
 
-usando `rustc`:
+- Usando `rustc`:
 
-```console
-rustc src/main.rs -o compowl
-```
+  ```console
+  rustc src/main.rs -o <name>
+  ```
 
-O executável já estará na pasta raíz com o nome `compowl`.
+  O executável estará na pasta raíz com o nome indicado.
 
 ## Execução
 
+Comando para executar:
+
 ```console
-./compowl <output> <file1> <file2> ...
+./compowl <output> <file1> <file2> <file3> ...
 ```
 
-#### Argumentos de entrada
+### Argumentos de entrada
 
 1. `<output>`:
 
@@ -38,10 +40,32 @@ O executável já estará na pasta raíz com o nome `compowl`.
 - `-t`: cada arquivo de entrada terá a saída exibida no terminal (`stdout`).
 - `-ft` | `-tf`: a saída será enviada aos arquivos e ao terminal ao mesmo tempo.
 
-2. `<file1> <file2> ...`:
+2. `<file1> <file2> <file3> ...`:
 
 - Lista de arquivos a serem usados como entrada para o analisador sintático.
 
-## Saída
+### Saída
 
 a saída do programa exibirá todos os tokens identificados pelo analisador léxico se toda a entrada for reconhecida. Caso o analisador encontre algum erro, será exibido no terminal a localização do token não reconhecido, e o arquivo de saída não será criado.
+
+A saída de cada arquivo será no formato:
+
+```
+<file>:<line>:<column>: <token1>
+<file>:<line>:<column>: <token2>
+<file>:<line>:<column>: <token3>
+<file>:<line>:<column>: <token4>
+...
+
+<tabela_de_simbolos>
+
+```
+
+### Exemplos
+
+Estão inclusos 4 arquivos de exemplo de entrada com suas respectivas saídas:
+
+- `file1.txt`: `file1.txt.output`
+- `file2.txt`: `file2.txt.output`
+- `file3.txt`: `file3.txt.output`
+- `file4.txt`: `file4.txt.output`

@@ -5,10 +5,9 @@ pub enum Type {
     Class,
     Property,
     Cardinality,
-    StringLiteral,
+    Literal,
 }
 
-#[derive(Debug, Clone)]
 pub struct Symbol {
     type_: Type,
     id: String,
@@ -28,7 +27,6 @@ impl Symbol {
     }
 }
 
-#[derive(Debug)]
 pub struct SymbolTable {
     symbols: HashMap<usize, Symbol>,
 }

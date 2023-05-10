@@ -1,0 +1,18 @@
+SOME ALL VALUE MIN MAX EXACTLY THAT NOT AND OR ,
+
+Pizza
+VegetarianPizza
+Margherita_Pizza_With_BorderOfChocolate
+Pizza
+Pizza
+VegetarianPizza
+
+hasSome
+isTopOf
+
+{Um, Dois, Tres, Quatro}
+
+integer[>="200"]
+
+decimal[<"0.50"]
+

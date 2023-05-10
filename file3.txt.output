@@ -1,0 +1,39 @@
+file3.txt:1:1: ClassIdentifier { index: 0 }
+file3.txt:1:7: Keyword(THAT)
+file3.txt:2:3: PropertyIdentifier { index: 1 }
+file3.txt:2:14: Keyword(SOME)
+file3.txt:2:19: ClassIdentifier { index: 2 }
+file3.txt:2:37: Keyword(AND)
+file3.txt:3:3: PropertyIdentifier { index: 1 }
+file3.txt:3:14: Keyword(SOME)
+file3.txt:3:19: ClassIdentifier { index: 3 }
+file3.txt:3:33: Keyword(AND)
+file3.txt:4:3: PropertyIdentifier { index: 1 }
+file3.txt:4:14: Keyword(ONLY)
+file3.txt:4:19: Punctuation(OpenParen)
+file3.txt:5:5: ClassIdentifier { index: 2 }
+file3.txt:5:23: Keyword(OR)
+file3.txt:6:5: ClassIdentifier { index: 3 }
+file3.txt:6:19: Keyword(OR)
+file3.txt:7:5: ClassIdentifier { index: 4 }
+file3.txt:8:3: Punctuation(CloseParen)
+file3.txt:8:5: Keyword(AND)
+file3.txt:9:3: PropertyIdentifier { index: 5 }
+file3.txt:9:21: Keyword(SOME)
+file3.txt:9:26: Datatype(Integer)
+file3.txt:9:33: Punctuation(OpenBracket)
+file3.txt:9:34: Punctuation(GreaterThanEqual)
+file3.txt:9:36: Literal { index: 6 }
+file3.txt:9:41: Punctuation(CloseBracket)
+
+----------------------------------
+|Index|Type    |ID               |
+----------------------------------
+|0    |Class   |Pizza            |
+|1    |Property|hasTopping       |
+|2    |Class   |MozzarellaTopping|
+|3    |Class   |TomatoTopping    |
+|4    |Class   |PepperonniTopping|
+|5    |Property|hasCaloricContent|
+|6    |Literal |400              |
+----------------------------------

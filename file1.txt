@@ -1,0 +1,8 @@
+Pizza THAT
+hasTopping SOME MozzarellaTopping AND
+hasTopping SOME TomatoTopping AND
+hasTopping SOME MozzarellaTopping OR
+hasTopping SOME TomatoTopping OR
+hasTopping SOME PepperonniTopping AND
+isBorderOf CheeseBorder OR
+isBorderOf ChocolateBorder
