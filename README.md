@@ -57,15 +57,27 @@ A saída de cada arquivo será no formato:
 <file>:<line>:<column>: <token4>
 ...
 
+<file>:<line>:<column>: <decl1_text>
+--
+<decl1_ast>
+
+<file>:<line>:<column>: <decl2_text>
+--
+<decl2_ast>
+
+...
+
 <tabela_de_simbolos>
 
 ```
 
 ### Exemplos
 
-Estão inclusos 4 arquivos de exemplo de entrada com suas respectivas saídas:
+Estão inclusos 6 arquivos de exemplo de entrada e 2 arquivos de saída:
 
-- `file1.txt`: `file1.txt.output`
-- `file2.txt`: `file2.txt.output`
-- `file3.txt`: `file3.txt.output`
-- `file4.txt`: `file4.txt.output`
+- `file1.txt` -> `file1.txt.output`
+- `file2.txt` -> `file2.txt.output`
+- `file3.txt`
+- `file4.txt`
+- `file5.txt`
+- `file6.txt`
