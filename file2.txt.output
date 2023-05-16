@@ -1,54 +1,263 @@
-file2.txt:1:1: Keyword(SOME)
-file2.txt:1:6: Keyword(ALL)
-file2.txt:1:10: Keyword(VALUE)
-file2.txt:1:16: Keyword(MIN)
-file2.txt:1:20: Keyword(MAX)
-file2.txt:1:24: Keyword(EXACTLY)
-file2.txt:1:32: Keyword(THAT)
-file2.txt:1:37: Keyword(NOT)
-file2.txt:1:41: Keyword(AND)
-file2.txt:1:45: Keyword(OR)
-file2.txt:1:48: Punctuation(Comma)
-file2.txt:3:1: ClassIdentifier { index: 0 }
-file2.txt:4:1: ClassIdentifier { index: 1 }
-file2.txt:5:1: ClassIdentifier { index: 2 }
+file2.txt:1:1: ClassIdentifier { index: 0 }
+file2.txt:1:7: Keyword(AND)
+file2.txt:1:11: PropertyIdentifier { index: 1 }
+file2.txt:1:22: Keyword(MIN)
+file2.txt:1:26: Cardinality(3)
+file2.txt:1:28: ClassIdentifier { index: 2 }
+file2.txt:2:1: ClassIdentifier { index: 0 }
+file2.txt:2:7: Keyword(AND)
+file2.txt:2:11: Punctuation(OpenParen)
+file2.txt:2:12: PropertyIdentifier { index: 1 }
+file2.txt:2:23: Keyword(MIN)
+file2.txt:2:27: Cardinality(3)
+file2.txt:2:29: ClassIdentifier { index: 2 }
+file2.txt:2:41: Punctuation(CloseParen)
+file2.txt:4:1: ClassIdentifier { index: 0 }
+file2.txt:4:7: Keyword(AND)
+file2.txt:4:11: PropertyIdentifier { index: 1 }
+file2.txt:4:22: Keyword(SOME)
+file2.txt:4:27: ClassIdentifier { index: 2 }
+file2.txt:4:40: Keyword(AND)
+file2.txt:4:44: PropertyIdentifier { index: 3 }
+file2.txt:4:57: Keyword(SOME)
+file2.txt:4:62: ClassIdentifier { index: 4 }
+file2.txt:5:1: ClassIdentifier { index: 0 }
+file2.txt:5:7: Keyword(AND)
+file2.txt:5:11: PropertyIdentifier { index: 1 }
+file2.txt:5:22: Keyword(SOME)
+file2.txt:5:27: Punctuation(OpenParen)
+file2.txt:5:28: ClassIdentifier { index: 2 }
+file2.txt:5:41: Keyword(AND)
+file2.txt:5:45: PropertyIdentifier { index: 3 }
+file2.txt:5:58: Keyword(SOME)
+file2.txt:5:63: ClassIdentifier { index: 4 }
+file2.txt:5:66: Punctuation(CloseParen)
 file2.txt:6:1: ClassIdentifier { index: 0 }
+file2.txt:6:7: Keyword(AND)
+file2.txt:6:11: Punctuation(OpenParen)
+file2.txt:6:12: PropertyIdentifier { index: 1 }
+file2.txt:6:23: Keyword(SOME)
+file2.txt:6:28: ClassIdentifier { index: 2 }
+file2.txt:6:40: Punctuation(CloseParen)
+file2.txt:6:42: Keyword(AND)
+file2.txt:6:46: PropertyIdentifier { index: 3 }
+file2.txt:6:59: Keyword(SOME)
+file2.txt:6:64: ClassIdentifier { index: 4 }
 file2.txt:7:1: ClassIdentifier { index: 0 }
-file2.txt:8:1: ClassIdentifier { index: 1 }
-file2.txt:10:1: PropertyIdentifier { index: 3 }
-file2.txt:11:1: PropertyIdentifier { index: 4 }
-file2.txt:13:1: Punctuation(OpenBrace)
-file2.txt:13:2: ClassIdentifier { index: 5 }
-file2.txt:13:4: Punctuation(Comma)
-file2.txt:13:6: ClassIdentifier { index: 6 }
-file2.txt:13:10: Punctuation(Comma)
-file2.txt:13:12: ClassIdentifier { index: 7 }
-file2.txt:13:16: Punctuation(Comma)
-file2.txt:13:18: ClassIdentifier { index: 8 }
-file2.txt:13:24: Punctuation(CloseBrace)
-file2.txt:15:1: Datatype(Integer)
-file2.txt:15:8: Punctuation(OpenBracket)
-file2.txt:15:9: Punctuation(GreaterThanEqual)
-file2.txt:15:11: Literal { index: 9 }
-file2.txt:15:16: Punctuation(CloseBracket)
-file2.txt:17:1: Datatype(Decimal)
-file2.txt:17:8: Punctuation(OpenBracket)
-file2.txt:17:9: Punctuation(LessThan)
-file2.txt:17:10: Literal { index: 10 }
-file2.txt:17:16: Punctuation(CloseBracket)
+file2.txt:7:7: Keyword(AND)
+file2.txt:7:11: Punctuation(OpenParen)
+file2.txt:7:12: PropertyIdentifier { index: 1 }
+file2.txt:7:23: Keyword(SOME)
+file2.txt:7:28: Punctuation(OpenParen)
+file2.txt:7:29: ClassIdentifier { index: 2 }
+file2.txt:7:42: Keyword(AND)
+file2.txt:7:46: Punctuation(OpenParen)
+file2.txt:7:47: PropertyIdentifier { index: 3 }
+file2.txt:7:60: Keyword(SOME)
+file2.txt:7:65: ClassIdentifier { index: 4 }
+file2.txt:7:68: Punctuation(CloseParen)
+file2.txt:7:69: Punctuation(CloseParen)
+file2.txt:7:70: Punctuation(CloseParen)
+file2.txt:9:1: ClassIdentifier { index: 0 }
+file2.txt:9:7: Keyword(AND)
+file2.txt:9:11: Punctuation(OpenParen)
+file2.txt:10:3: PropertyIdentifier { index: 1 }
+file2.txt:10:14: Keyword(ONLY)
+file2.txt:10:19: Punctuation(OpenParen)
+file2.txt:11:5: ClassIdentifier { index: 5 }
+file2.txt:11:23: Keyword(OR)
+file2.txt:11:26: ClassIdentifier { index: 6 }
+file2.txt:12:3: Punctuation(CloseParen)
+file2.txt:13:1: Punctuation(CloseParen)
+file2.txt:14:1: ClassIdentifier { index: 0 }
+file2.txt:14:7: Keyword(AND)
+file2.txt:14:11: PropertyIdentifier { index: 1 }
+file2.txt:14:22: Keyword(ONLY)
+file2.txt:14:27: ClassIdentifier { index: 5 }
+file2.txt:14:45: Keyword(OR)
+file2.txt:14:48: ClassIdentifier { index: 6 }
 
---------------------------------------------------------
-|Index|Type    |ID                                     |
---------------------------------------------------------
-|0    |Class   |Pizza                                  |
-|1    |Class   |VegetarianPizza                        |
-|2    |Class   |Margherita_Pizza_With_BorderOfChocolate|
-|3    |Property|hasSome                                |
-|4    |Property|isTopOf                                |
-|5    |Class   |Um                                     |
-|6    |Class   |Dois                                   |
-|7    |Class   |Tres                                   |
-|8    |Class   |Quatro                                 |
-|9    |Literal |200                                    |
-|10   |Literal |0.50                                   |
---------------------------------------------------------
+file2.txt:1:1:
+Pizza AND hasTopping MIN 3 PizzaTopping
+--
+DefinedClass {
+    super_class: ClassIdentifier { index: 0 },
+    properties: [
+        Property {
+            index: 1,
+            description: Min(
+                3,
+                ClassIdentifier { index: 2 },
+            ),
+        },
+    ],
+}
+
+file2.txt:2:1:
+Pizza AND (hasTopping MIN 3 PizzaTopping)
+--
+DefinedClass {
+    super_class: ClassIdentifier { index: 0 },
+    properties: [
+        Property {
+            index: 1,
+            description: Min(
+                3,
+                ClassIdentifier { index: 2 },
+            ),
+        },
+    ],
+}
+
+file2.txt:4:1:
+Pizza AND hasTopping SOME PizzaTopping AND hasSpiciness SOME Hot
+--
+DefinedClass {
+    super_class: ClassIdentifier { index: 0 },
+    properties: [
+        Property {
+            index: 1,
+            description: Some(
+                DefinedClass {
+                    super_class: ClassIdentifier { index: 2 },
+                    properties: [
+                        Property {
+                            index: 3,
+                            description: Some(
+                                ClassIdentifier { index: 4 },
+                            ),
+                        },
+                    ],
+                },
+            ),
+        },
+    ],
+}
+
+file2.txt:5:1:
+Pizza AND hasTopping SOME (PizzaTopping AND hasSpiciness SOME Hot)
+--
+DefinedClass {
+    super_class: ClassIdentifier { index: 0 },
+    properties: [
+        Property {
+            index: 1,
+            description: Some(
+                DefinedClass {
+                    super_class: ClassIdentifier { index: 2 },
+                    properties: [
+                        Property {
+                            index: 3,
+                            description: Some(
+                                ClassIdentifier { index: 4 },
+                            ),
+                        },
+                    ],
+                },
+            ),
+        },
+    ],
+}
+
+file2.txt:6:1:
+Pizza AND (hasTopping SOME PizzaTopping) AND hasSpiciness SOME Hot
+--
+DefinedClass {
+    super_class: ClassIdentifier { index: 0 },
+    properties: [
+        Property {
+            index: 1,
+            description: Some(
+                ClassIdentifier { index: 2 },
+            ),
+        },
+        Property {
+            index: 3,
+            description: Some(
+                ClassIdentifier { index: 4 },
+            ),
+        },
+    ],
+}
+
+file2.txt:7:1:
+Pizza AND (hasTopping SOME (PizzaTopping AND (hasSpiciness SOME Hot)))
+--
+DefinedClass {
+    super_class: ClassIdentifier { index: 0 },
+    properties: [
+        Property {
+            index: 1,
+            description: Some(
+                DefinedClass {
+                    super_class: ClassIdentifier { index: 2 },
+                    properties: [
+                        Property {
+                            index: 3,
+                            description: Some(
+                                ClassIdentifier { index: 4 },
+                            ),
+                        },
+                    ],
+                },
+            ),
+        },
+    ],
+}
+
+file2.txt:9:1:
+Pizza AND (
+  hasTopping ONLY (
+    VegetarianTopping OR NotVegetarianTopping
+  )
+)
+--
+DefinedClass {
+    super_class: ClassIdentifier { index: 0 },
+    properties: [
+        Property {
+            index: 1,
+            description: Only(
+                DisjointClass(
+                    [
+                        ClassIdentifier { index: 5 },
+                        ClassIdentifier { index: 6 },
+                    ],
+                ),
+            ),
+        },
+    ],
+}
+
+file2.txt:14:1:
+Pizza AND hasTopping ONLY VegetarianTopping OR NotVegetarianTopping
+--
+DefinedClass {
+    super_class: ClassIdentifier { index: 0 },
+    properties: [
+        Property {
+            index: 1,
+            description: Only(
+                DisjointClass(
+                    [
+                        ClassIdentifier { index: 5 },
+                        ClassIdentifier { index: 6 },
+                    ],
+                ),
+            ),
+        },
+    ],
+}
+
+
+---------------------------------------------
+|Index|Type            |ID                  |
+---------------------------------------------
+|0    |Class           |Pizza               |
+|1    |Property(Object)|hasTopping          |
+|2    |Class           |PizzaTopping        |
+|3    |Property(Object)|hasSpiciness        |
+|4    |Class           |Hot                 |
+|5    |Class           |VegetarianTopping   |
+|6    |Class           |NotVegetarianTopping|
+---------------------------------------------

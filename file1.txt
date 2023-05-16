@@ -1,8 +1,32 @@
-Pizza THAT
-hasTopping SOME MozzarellaTopping AND
-hasTopping SOME TomatoTopping AND
-hasTopping SOME MozzarellaTopping OR
-hasTopping SOME TomatoTopping OR
-hasTopping SOME PepperonniTopping AND
-isBorderOf CheeseBorder OR
-isBorderOf ChocolateBorder
+Pizza AND (hasTopping SOME CheeseTopping)
+Pizza AND (hasTopping EXACTLY 4 CheeseTopping)
+Pizza AND (hasCalorificContent SOME integer[>="400"])
+Pizza AND (hasCalorificContent SOME integer[<"400"])
+Pizza AND (hasCalorificContent SOME integer)
+Pizza AND (hasCalorificContent VALUE "800")
+Pizza AND (hasTopping MIN 3 PizzaTopping)
+Pizza AND (hasTopping SOME (PizzaTopping AND (hasSpiciness SOME Hot)))
+
+NamedPizza
+hasTopping SOME MozzarellaTopping
+hasTopping SOME PepperoniTopping
+hasTopping SOME TomatoTopping
+hasTopping ONLY (MozzarellaTopping OR PepperoniTopping OR TomatoTopping)
+
+NamedPizza
+hasTopping SOME MozzarellaTopping
+hasTopping SOME TomatoTopping
+hasTopping ONLY (MozzarellaTopping OR TomatoTopping)
+
+NamedPizza
+hasTopping SOME MozzarellaTopping
+hasTopping SOME OliveTopping
+hasTopping SOME ParmezanTopping
+hasTopping SOME TomatoTopping
+hasTopping ONLY (MozzarellaTopping OR OliveTopping OR ParmezanTopping OR TomatoTopping)
+
+{ChocolateTopping, BananaTopping}
+
+NamedPizza
+hasTopping SOME {ChocolateTopping, BananaTopping}
+hasTopping ONLY (ChocolateTopping OR BananaTopping)

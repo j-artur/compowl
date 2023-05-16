@@ -1,18 +1,15 @@
-SOME ALL VALUE MIN MAX EXACTLY THAT NOT AND OR ,
+Pizza AND hasTopping MIN 3 PizzaTopping
+Pizza AND (hasTopping MIN 3 PizzaTopping)
 
-Pizza
-VegetarianPizza
-Margherita_Pizza_With_BorderOfChocolate
-Pizza
-Pizza
-VegetarianPizza
+Pizza AND hasTopping SOME PizzaTopping AND hasSpiciness SOME Hot
+Pizza AND hasTopping SOME (PizzaTopping AND hasSpiciness SOME Hot)
+Pizza AND (hasTopping SOME PizzaTopping) AND hasSpiciness SOME Hot
+Pizza AND (hasTopping SOME (PizzaTopping AND (hasSpiciness SOME Hot)))
 
-hasSome
-isTopOf
-
-{Um, Dois, Tres, Quatro}
-
-integer[>="200"]
-
-decimal[<"0.50"]
+Pizza AND (
+  hasTopping ONLY (
+    VegetarianTopping OR NotVegetarianTopping
+  )
+)
+Pizza AND hasTopping ONLY VegetarianTopping OR NotVegetarianTopping
 

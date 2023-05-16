@@ -62,6 +62,14 @@ impl Span<'_> {
         let remaining = self.shift(n);
         (remaining, taken)
     }
+
+    pub fn merge(&self, other: &Self) -> Self {
+        Self {
+            start: self.start,
+            end: other.end,
+            src: self.src,
+        }
+    }
 }
 
 impl<'s> From<&'s Source> for Span<'s> {
@@ -86,5 +94,11 @@ impl<'s, T> Located<'s, T> {
 
     pub fn map<U, F: FnOnce(T) -> U>(self, f: F) -> Located<'s, U> {
         Located::new(f(self.value), self.span)
+    }
+}
+
+impl<'s, T: std::fmt::Debug> std::fmt::Debug for Located<'s, T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}: {:?}", self.span.location(), self.value)
     }
 }

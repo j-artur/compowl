@@ -18,7 +18,7 @@ pub enum Keyword {
     OR,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Datatype {
     Integer,
     Decimal,
@@ -47,7 +47,7 @@ pub enum TokenType {
     Punctuation(Punctuation),
     ClassIdentifier(String),
     PropertyIdentifier(String),
-    Cardinality(String),
+    Cardinality(usize),
     Literal(String),
 }
 
@@ -190,6 +190,11 @@ fn parse_keyword<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, Keyword>> {
         .or_else(|src| parse_seq_any_casing(src, "NOT").map(|k| k.map(|_| Keyword::NOT)))
         .or_else(|src| parse_seq_any_casing(src, "AND").map(|k| k.map(|_| Keyword::AND)))
         .or_else(|src| parse_seq_any_casing(src, "OR").map(|k| k.map(|_| Keyword::OR)))
+        .and_then(|remaining, k| {
+            parse_if(remaining, |c| !c.is_alphabetic() && c != '_')
+                .and_then(|_, _| LexerResult::ok(remaining, k))
+                .or_else(|_| LexerResult::err(src, LexerErr::UnrecognizedToken))
+        })
 }
 
 fn parse_datatype<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, Datatype>> {
@@ -198,6 +203,11 @@ fn parse_datatype<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, Datatype>> {
         .or_else(|src| parse_seq_any_casing(src, "DECIMAL").map(|l| l.map(|_| Datatype::Decimal)))
         .or_else(|src| parse_seq_any_casing(src, "FLOAT").map(|l| l.map(|_| Datatype::Float)))
         .or_else(|src| parse_seq_any_casing(src, "STRING").map(|l| l.map(|_| Datatype::String)))
+        .and_then(|remaining, d| {
+            parse_if(remaining, |c| !c.is_alphabetic() && c != '_')
+                .and_then(|_, _| LexerResult::ok(remaining, d))
+                .or_else(|_| LexerResult::err(src, LexerErr::UnrecognizedToken))
+        })
 }
 
 fn parse_punctuation<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, Punctuation>> {
@@ -295,13 +305,14 @@ fn parse_property<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, String>> {
         })
 }
 
-fn parse_cardinality<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, String>> {
+fn parse_cardinality<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, usize>> {
     let (remaining, located) = parse_while(src, |c| c.is_digit(10));
 
     if located.value.is_empty() {
         LexerResult::err(src, LexerErr::UnrecognizedToken)
     } else {
-        LexerResult::ok(remaining, located.map(|s| s.to_string()))
+        let cardinality = located.map(|s| s.to_string().parse().unwrap());
+        LexerResult::ok(remaining, cardinality)
     }
 }
 
@@ -330,14 +341,14 @@ fn parse_token<'s>(src: Span<'s>) -> LexerResult<'s, Located<'s, TokenType>> {
         .or_else(|src| parse_literal(src).map(|l| l.map(|s| TokenType::Literal(s))))
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Token {
     Keyword(Keyword),
     Datatype(Datatype),
     Punctuation(Punctuation),
+    Cardinality(usize),
     ClassIdentifier { index: usize },
     PropertyIdentifier { index: usize },
-    Cardinality { index: usize },
     Literal { index: usize },
 }
 
@@ -353,17 +364,14 @@ pub fn parse<'s>(
             TokenType::Keyword(k) => Located::new(Token::Keyword(k), token_type.span),
             TokenType::Datatype(d) => Located::new(Token::Datatype(d), token_type.span),
             TokenType::Punctuation(p) => Located::new(Token::Punctuation(p), token_type.span),
+            TokenType::Cardinality(c) => Located::new(Token::Cardinality(c), token_type.span),
             TokenType::ClassIdentifier(c) => {
                 let index = table.get_or_insert(Type::Class, c);
                 Located::new(Token::ClassIdentifier { index }, token_type.span)
             }
             TokenType::PropertyIdentifier(p) => {
-                let index = table.get_or_insert(Type::Property, p);
+                let index = table.get_or_insert(Type::Property(None), p);
                 Located::new(Token::PropertyIdentifier { index }, token_type.span)
-            }
-            TokenType::Cardinality(c) => {
-                let index = table.get_or_insert(Type::Cardinality, c);
-                Located::new(Token::Cardinality { index }, token_type.span)
             }
             TokenType::Literal(s) => {
                 let index = table.get_or_insert(Type::Literal, s);

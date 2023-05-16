@@ -1,0 +1,7 @@
+Pizza AND hasTopping SOME CheeseTopping
+Pizza AND hasTopping EXACTLY 4 CheeseTopping
+Pizza AND hasTopping VALUE "CheeseTopping"
+Pizza AND hasCalorificContent SOME integer[>="400"]
+Pizza AND hasCalorificContent SOME integer[<"400"]
+Pizza AND hasCalorificContent SOME integer
+Pizza AND hasCalorificContent VALUE "800"

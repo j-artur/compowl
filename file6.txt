@@ -1,0 +1,4 @@
+Pizza AND hasCalorificContent SOME integer[>="400"]
+Pizza AND hasCalorificContent SOME integer[<"400"]
+Pizza AND hasCalorificContent VALUE "800"
+Pizza AND (hasCalorificContent SOME Pizza)

@@ -7,9 +7,8 @@ use std::{
 use span::Source;
 use table::SymbolTable;
 
-use crate::lexer::parse;
-
 mod lexer;
+mod parser;
 mod span;
 mod table;
 
@@ -54,6 +53,11 @@ fn usage(name: &str) {
 
 fn main() {
     let args = args().collect::<Vec<_>>();
+    // let args = vec![
+    //     "main".to_string(),
+    //     "-ft".to_string(),
+    //     "file6.txt".to_string(),
+    // ];
 
     let output_type = match args.get(1).map(|s| s.as_str()) {
         Some("-f") => OutputType::File,
@@ -98,37 +102,60 @@ fn main() {
             content,
         };
 
-        match parse(&src) {
-            Ok((table, tokens)) => {
-                let mut out = match output_type {
-                    OutputType::File => Output::File(BufWriter::new(
-                        File::create(format!("{}.output", filename))
-                            .expect(&format!("Could not create file {}.output", filename)),
-                    )),
-                    OutputType::Stdout => Output::Stdout,
-                    OutputType::FileAndStdout => Output::FileAndStdout(BufWriter::new(
-                        File::create(format!("{}.output", filename))
-                            .expect(&format!("Could not create file {}.output", filename)),
-                    )),
-                };
+        match lexer::parse(&src) {
+            Ok((mut table, tokens)) => match parser::parse(&tokens, &mut table) {
+                Ok(decls) => {
+                    let mut out = match output_type {
+                        OutputType::File => Output::File(BufWriter::new(
+                            File::create(format!("{}.output", filename))
+                                .expect(&format!("Could not create file {}.output", filename)),
+                        )),
+                        OutputType::Stdout => Output::Stdout,
+                        OutputType::FileAndStdout => Output::FileAndStdout(BufWriter::new(
+                            File::create(format!("{}.output", filename))
+                                .expect(&format!("Could not create file {}.output", filename)),
+                        )),
+                    };
 
-                for token in &tokens {
-                    writeln!(out, "{}: {:?}", token.span.location(), token.value)
+                    for token in &tokens {
+                        writeln!(out, "{:?}", token)
+                            .expect(&format!("Could not write to file {}.output", filename));
+                    }
+
+                    writeln!(out).expect("Could not write to file");
+
+                    out.flush()
                         .expect(&format!("Could not write to file {}.output", filename));
+
+                    for decl in &decls {
+                        writeln!(
+                            out,
+                            "{}:\n{}\n--\n{:#?}\n",
+                            decl.span.location(),
+                            decl.span.fragment(),
+                            decl.value,
+                        )
+                        .expect(&format!("Could not write to file {}.output", filename));
+                    }
+
+                    writeln!(out).expect("Could not write to file");
+
+                    write_table(&mut out, &table);
+
+                    out.flush()
+                        .expect(&format!("Could not write to file {}.output", filename));
+
+                    println!("Finished parsing {} with success", filename);
+                    println!("{:-<1$}", "", filename.len() + 30);
                 }
-
-                writeln!(out).expect("Could not write to file");
-
-                write_table(&mut out, &table);
-
-                out.flush()
-                    .expect(&format!("Could not write to file {}.output", filename));
-
-                println!("Finished parsing {} with success", filename);
-                println!("{:-<1$}", "", filename.len() + 30);
-            }
+                Err(err) => {
+                    println!("Parser error at {:?}", err);
+                    println!("Finished parsing {} with failure", filename);
+                    println!("{:-<1$}", "", filename.len() + 30);
+                }
+            },
             Err(err) => {
-                println!("{}: {:?}", err.span.location(), err.value);
+                println!("Lexer error at {}: {:?}", err.span.location(), err.value);
                 println!("Finished parsing {} with failure", filename);
                 println!("{:-<1$}", "", filename.len() + 30);
             }

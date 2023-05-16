@@ -1,1 +1,2 @@
-SOME ALL VALUE MIN MAX EXACTLY THAT ONLY NOT AND OR
+SweetPizza
+hasTopping SOME {ChocolateTopping, ChocolateTopping, BananaTopping}

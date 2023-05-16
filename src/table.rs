@@ -1,13 +1,35 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, fmt::Debug};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PropertyType {
+    Object,
+    Data,
+}
+
+#[derive(Clone, Copy)]
 pub enum Type {
     Class,
-    Property,
-    Cardinality,
+    Property(Option<PropertyType>),
     Literal,
 }
 
+impl Debug for Type {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Class => write!(f, "Class"),
+            Self::Property(type_) => {
+                write!(f, "Property")?;
+                if let Some(type_) = type_ {
+                    write!(f, "({:?})", type_)?;
+                }
+                Ok(())
+            }
+            Self::Literal => write!(f, "Literal"),
+        }
+    }
+}
+
+#[derive(Clone)]
 pub struct Symbol {
     type_: Type,
     id: String,
@@ -38,6 +60,10 @@ impl SymbolTable {
         }
     }
 
+    pub fn get(&self, index: usize) -> Option<&Symbol> {
+        self.symbols.get(&index)
+    }
+
     pub fn get_or_insert(&mut self, type_: Type, id: String) -> usize {
         if let Some(index) = self
             .symbols
@@ -49,6 +75,19 @@ impl SymbolTable {
             let index = self.symbols.len();
             self.symbols.insert(index, Symbol::new(type_, id));
             index
+        }
+    }
+
+    pub fn update_property_type(&mut self, index: usize, type_: PropertyType) -> bool {
+        if let Some(symbol) = self.symbols.get_mut(&index) {
+            if let Type::Property(None) = symbol.type_ {
+                symbol.type_ = Type::Property(Some(type_));
+                true
+            } else {
+                false
+            }
+        } else {
+            false
         }
     }
 
