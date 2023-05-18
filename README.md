@@ -79,5 +79,5 @@ Estão inclusos 6 arquivos de exemplo de entrada e 2 arquivos de saída:
 - `file2.txt` -> `file2.txt.output`
 - `file3.txt`
 - `file4.txt`
-- `file4.txt`
-- `file4.txt`
+- `file5.txt`
+- `file6.txt`
