@@ -13,25 +13,6 @@ pub enum ClassDecl {
     Disjoint(Vec<ClassIdentifier>),
 }
 
-impl Debug for ClassDecl {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Defined(super_class, properties) => f
-                .debug_struct("DefinedClass")
-                .field("super_class", super_class)
-                .field("properties", properties)
-                .finish(),
-            Self::Primitive(super_class, properties) => f
-                .debug_struct("PrimitiveClass")
-                .field("super_class", super_class)
-                .field("properties", properties)
-                .finish(),
-            Self::Enumerated(classes) => f.debug_tuple("EnumeratedClass").field(classes).finish(),
-            Self::Disjoint(classes) => f.debug_tuple("DisjointClass").field(classes).finish(),
-        }
-    }
-}
-
 #[derive(PartialEq, Eq)]
 pub enum Class {
     Identifier(ClassIdentifier),
@@ -40,30 +21,9 @@ pub enum Class {
     Disjoint(Vec<ClassIdentifier>),
 }
 
-impl Debug for Class {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Identifier(class) => class.fmt(f),
-            Self::Defined(super_class, properties) => f
-                .debug_struct("DefinedClass")
-                .field("super_class", super_class)
-                .field("properties", properties)
-                .finish(),
-            Self::Enumerated(classes) => f.debug_tuple("EnumeratedClass").field(classes).finish(),
-            Self::Disjoint(classes) => f.debug_tuple("DisjointClass").field(classes).finish(),
-        }
-    }
-}
-
 #[derive(PartialEq, Eq)]
 pub struct ClassIdentifier {
     index: usize,
-}
-
-impl Debug for ClassIdentifier {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "ClassIdentifier {{ index: {} }}", self.index)
-    }
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -72,28 +32,10 @@ pub struct Property {
     description: PropertyDescription,
 }
 
-impl Property {
-    pub fn type_(&self) -> PropertyType {
-        match &self.description {
-            PropertyDescription::Object(_) => PropertyType::Object,
-            PropertyDescription::Data(_) => PropertyType::Data,
-        }
-    }
-}
-
 #[derive(PartialEq, Eq)]
 pub enum PropertyDescription {
     Object(ObjectDescription),
     Data(DataDescription),
-}
-
-impl Debug for PropertyDescription {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Object(description) => description.fmt(f),
-            Self::Data(description) => description.fmt(f),
-        }
-    }
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -121,32 +63,10 @@ pub struct Literal {
     index: usize,
 }
 
-impl Debug for Literal {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Literal {{ index: {} }}", self.index)
-    }
-}
-
 #[derive(PartialEq, Eq)]
 pub struct Data {
     datatype: Datatype,
     restriction: Option<Restriction>,
-}
-
-impl Debug for Data {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match &self.restriction {
-            Some(restriction) => f
-                .debug_struct("Data")
-                .field("datatype", &self.datatype)
-                .field("restriction", restriction)
-                .finish(),
-            None => f
-                .debug_struct("Data")
-                .field("datatype", &self.datatype)
-                .finish(),
-        }
-    }
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -173,53 +93,6 @@ pub enum ParserErr<'t> {
         expected: Type,
         found: Type,
     },
-}
-
-impl Debug for ParserErr<'_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::UnexpectedEndOfInput => write!(f, "UnexpectedEndOfInput"),
-            Self::RepeatedProperty(property) => {
-                write!(
-                    f,
-                    "{}: RepeatedProperty: {:?}",
-                    property.span.location(),
-                    property.span.fragment()
-                )
-            }
-            Self::RepeatedClass(arg0) => {
-                write!(
-                    f,
-                    "{}: RepeatedClass: {:?}",
-                    arg0.span.location(),
-                    arg0.span.fragment()
-                )
-            }
-            Self::UnrecognizedToken { expected, found } => {
-                write!(
-                    f,
-                    "{}: UnrecognizedToken: expected {}, found {:?}",
-                    found.span.location(),
-                    expected,
-                    found.value
-                )
-            }
-            Self::TypeMismatch {
-                location,
-                expected,
-                found,
-            } => {
-                write!(
-                    f,
-                    "{}: TypeMismatch: expected {:?}, found {:?} at '{}'",
-                    location.location(),
-                    expected,
-                    found,
-                    location.fragment()
-                )
-            }
-        }
-    }
 }
 
 use crate::lexer::Keyword::*;
@@ -279,6 +152,30 @@ fn parse_decl<'t>(mut tokens: Tokens<'t>, table: &mut SymbolTable) -> ParserResu
                             let class_decl = ClassDecl::Defined(class_identifier, properties);
                             Ok((tokens, Located::new(class_decl, span)))
                         }
+                        Token::Keyword(OR) => {
+                            tokens.next();
+                            let (remaining, class) = parse_class_identifier(tokens)?;
+                            tokens = remaining;
+                            let mut span = span.merge(&class.span);
+                            if class_identifier == class.value {
+                                return Err(ParserErr::RepeatedClass(class));
+                            }
+                            let mut classes = vec![class_identifier, class.value];
+
+                            while let Some(Token::Keyword(OR)) = tokens.peek().map(|t| &t.value) {
+                                tokens.next();
+                                let (remaining, class) = parse_class_identifier(tokens)?;
+                                tokens = remaining;
+                                span = span.merge(&class.span);
+                                if classes.iter().any(|c| *c == class.value) {
+                                    return Err(ParserErr::RepeatedClass(class));
+                                }
+                                classes.push(class.value);
+                            }
+
+                            let class = ClassDecl::Disjoint(classes);
+                            Ok((tokens, Located::new(class, span)))
+                        }
                         Token::PropertyIdentifier { .. } => {
                             let (remaining, property) = parse_property(tokens, table)?;
                             tokens = remaining;
@@ -304,44 +201,10 @@ fn parse_decl<'t>(mut tokens: Tokens<'t>, table: &mut SymbolTable) -> ParserResu
                             Ok((tokens, Located::new(class_decl, span)))
                         }
                         _ => Err(ParserErr::UnrecognizedToken {
-                            expected: "'AND' or PropertyIdentifier",
+                            expected: "'AND' or 'OR' or PropertyIdentifier",
                             found: token,
                         }),
                     },
-                    None => Err(ParserErr::UnexpectedEndOfInput),
-                }
-            }
-            Token::Punctuation(OpenParen) => {
-                tokens.next();
-                let (remaining, class) = parse_class_identifier(tokens)?;
-                tokens = remaining;
-                let mut span = token.span.merge(&class.span);
-                let mut classes = vec![class.value];
-
-                while let Some(token) = tokens.peek().cloned() {
-                    if matches!(token.value, Token::Keyword(OR)) {
-                        tokens.next();
-                        let (remaining, class) = parse_class_identifier(tokens)?;
-                        tokens = remaining;
-                        span = span.merge(&class.span);
-                        if classes.iter().any(|c| *c == class.value) {
-                            return Err(ParserErr::RepeatedClass(class));
-                        }
-                        classes.push(class.value);
-                    } else {
-                        break;
-                    }
-                }
-
-                match tokens.next() {
-                    Some(token) if matches!(token.value, Token::Punctuation(CloseParen)) => {
-                        let class_decl = ClassDecl::Disjoint(classes);
-                        Ok((tokens, Located::new(class_decl, span)))
-                    }
-                    Some(token) => Err(ParserErr::UnrecognizedToken {
-                        expected: "')'",
-                        found: token,
-                    }),
                     None => Err(ParserErr::UnexpectedEndOfInput),
                 }
             }
@@ -836,4 +699,131 @@ fn assert_property<'t>(
         }
     }
     Ok(())
+}
+
+impl Debug for ClassDecl {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Defined(super_class, properties) => f
+                .debug_struct("DefinedClass")
+                .field("super_class", super_class)
+                .field("properties", properties)
+                .finish(),
+            Self::Primitive(super_class, properties) => f
+                .debug_struct("PrimitiveClass")
+                .field("super_class", super_class)
+                .field("properties", properties)
+                .finish(),
+            Self::Enumerated(classes) => f.debug_tuple("EnumeratedClass").field(classes).finish(),
+            Self::Disjoint(classes) => f.debug_tuple("DisjointClass").field(classes).finish(),
+        }
+    }
+}
+
+impl Debug for Class {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Identifier(class) => class.fmt(f),
+            Self::Defined(super_class, properties) => f
+                .debug_struct("DefinedClass")
+                .field("super_class", super_class)
+                .field("properties", properties)
+                .finish(),
+            Self::Enumerated(classes) => f.debug_tuple("EnumeratedClass").field(classes).finish(),
+            Self::Disjoint(classes) => f.debug_tuple("DisjointClass").field(classes).finish(),
+        }
+    }
+}
+
+impl Debug for ClassIdentifier {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "ClassIdentifier {{ index: {} }}", self.index)
+    }
+}
+
+impl Debug for PropertyDescription {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Object(description) => description.fmt(f),
+            Self::Data(description) => description.fmt(f),
+        }
+    }
+}
+
+impl Debug for Literal {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Literal {{ index: {} }}", self.index)
+    }
+}
+
+impl Debug for Data {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match &self.restriction {
+            Some(restriction) => f
+                .debug_struct("Data")
+                .field("datatype", &self.datatype)
+                .field("restriction", restriction)
+                .finish(),
+            None => f
+                .debug_struct("Data")
+                .field("datatype", &self.datatype)
+                .finish(),
+        }
+    }
+}
+
+impl Debug for ParserErr<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::UnexpectedEndOfInput => write!(f, "UnexpectedEndOfInput"),
+            Self::RepeatedProperty(property) => {
+                write!(
+                    f,
+                    "{}: RepeatedProperty: {:?}",
+                    property.span.location(),
+                    property.span.fragment()
+                )
+            }
+            Self::RepeatedClass(arg0) => {
+                write!(
+                    f,
+                    "{}: RepeatedClass: {:?}",
+                    arg0.span.location(),
+                    arg0.span.fragment()
+                )
+            }
+            Self::UnrecognizedToken { expected, found } => {
+                write!(
+                    f,
+                    "{}: UnrecognizedToken: expected {}, found {:?}",
+                    found.span.location(),
+                    expected,
+                    found.value
+                )
+            }
+            Self::TypeMismatch {
+                location,
+                expected,
+                found,
+            } => {
+                write!(
+                    f,
+                    "{}: TypeMismatch: expected {:?}, found {:?} at '{}'",
+                    location.location(),
+                    expected,
+                    found,
+                    location.fragment()
+                )
+            }
+        }
+    }
+}
+
+impl Property {
+    pub fn type_(&self) -> PropertyType {
+        match &self.description {
+            PropertyDescription::Object(_) => PropertyType::Object,
+            PropertyDescription::Data(_) => PropertyType::Data,
+        }
+    }
 }
