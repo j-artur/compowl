@@ -13,3 +13,4 @@ Pizza AND (
 )
 Pizza AND hasTopping ONLY VegetarianTopping OR NotVegetarianTopping
 
+Pizza OR NamedPizza

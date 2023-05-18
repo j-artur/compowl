@@ -211,7 +211,7 @@ fn parse_decl<'t>(mut tokens: Tokens<'t>, table: &mut SymbolTable) -> ParserResu
             Token::Punctuation(OpenBrace) => parse_enumerated_class(tokens)
                 .map(|(tokens, classes)| (tokens, classes.map(|cs| ClassDecl::Enumerated(cs)))),
             _ => Err(ParserErr::UnrecognizedToken {
-                expected: "ClassIdentifier or '(' or '{'",
+                expected: "ClassIdentifier or '{'",
                 found: token,
             }),
         },
